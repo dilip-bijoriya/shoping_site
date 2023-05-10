@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { signUp } from "src/components/admin/admin.component";
+import { signIn, signUp } from "../components/admin/admin.component";
 
 const adminRouter = Router();
 // admin api's
-adminRouter.post('/api/signUp', signUp);
+adminRouter.post('/signUp', signUp);
+adminRouter.post('/signIn', signIn);
 
 export default adminRouter;

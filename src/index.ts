@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-
 dotenv.config();
 import express from 'express';
 import { default as mongoose } from 'mongoose';
-import adminRouter from './routes/public.route';
+import adminRouter from './routes/admin.route';
 const port = process.env.PORT || 4000;
 
 async function server() {
