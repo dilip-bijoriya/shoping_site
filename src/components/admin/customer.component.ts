@@ -1,5 +1,60 @@
 import { Request, Response } from "express";
 import customerModel from "../../models/customer.model";
+import mongoose from "mongoose";
+
+const customerList = async (req: Request, res: Response) => {
+    try {
+        const data = await customerModel.find();
+        const total = await customerModel.count();
+        return res.status(200).send({
+            error: false,
+            message: "success",
+            response: { data, total }
+        });
+    }
+    catch (error: any) {
+        console.error(error);
+        return res.status(500).send({
+            error: true,
+            message: error.message
+        });
+    }
+}
+
+const getByOne = async (req: Request, res: Response) => {
+    try {
+        const data = await customerModel.findOne({ _id: req.params.id });
+        return res.status(200).send({
+            error: false,
+            message: "success",
+            response: data
+        });
+    } catch (error: any) {
+        console.error(error);
+        return res.status(500).send({
+            error: true,
+            message: error.message
+        });
+    }
+}
+
+const deleteCustomer = async (req: Request, res: Response) => {
+    try {
+        const data = await customerModel.deleteOne({ _id: req.params.id });
+        return res.status(200).send({
+            error: false,
+            message: "customer delete successfully",
+            response: data
+        });
+    } catch (error: any) {
+        console.error(error);
+        return res.status(500).send({
+            error: true,
+            message: error.message
+        });
+    }
+}
+
 const create = async (req: Request, res: Response) => {
     try {
         const { email, password, phone, name } = req.body;
@@ -25,4 +80,23 @@ const create = async (req: Request, res: Response) => {
     }
 }
 
-export { create };
+const update = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { email, password, phone, fname, lname } = req.body;
+        const updateCustomer = await customerModel.findByIdAndUpdate(id, { email, password, phone, name: { fname, lname } }, { new: true });
+        return res.status(200).send({
+            error: false,
+            message: "customer update successfully",
+            response: updateCustomer
+        });
+    } catch (error: any) {
+        console.error(error);
+        return res.status(500).send({
+            error: true,
+            message: error.message
+        });
+    }
+}
+
+export { create, update, customerList, getByOne, deleteCustomer };
