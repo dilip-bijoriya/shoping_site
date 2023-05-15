@@ -1,9 +1,16 @@
 import { Request, Response } from "express";
 import customerModel from "../../models/customer.model";
-import mongoose from "mongoose";
+import { checkPermission } from "../../util/checkPermissions.util";
+import { RolesKeyEnum } from "../../types/roles.types";
 
 const customerList = async (req: Request, res: Response) => {
     try {
+        const admin = req.admin;
+        if (!await checkPermission(admin.roles.toString(), RolesKeyEnum.view_Cuctomer)) return res.status(403).send({
+            error: true,
+            message: 'Authrization Failed'
+        });
+
         const data = await customerModel.find();
         const total = await customerModel.count();
         return res.status(200).send({

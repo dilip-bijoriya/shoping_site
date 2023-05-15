@@ -2,12 +2,17 @@ import adminModel from "../models/admin.model"
 import roleModel from "../models/role.model";
 import { RolesKeyEnum } from "../types/roles.types";
 
+const Objects: any = {};
+for (let key in RolesKeyEnum) {
+    Objects[key] = true
+}
+
 export const AdminMigration = async () => {
     try {
         const role = await roleModel.findOneAndUpdate({ _id: '6454f526fd6e579cc57bed47' }, {
             name: 'Super Role',
             description: 'xyz',
-            roles: Object.values(RolesKeyEnum).map(each => ({ [each]: true }))
+            roles: Objects
         }, {
             upsert: true,
             new: true

@@ -1,14 +1,20 @@
 import { Schema, model } from "mongoose";
 import { RolesKeyEnum } from "../types/roles.types";
 
+const Objects: any = {};
+for (let key in RolesKeyEnum) {
+    Objects[key] = {
+        type: Boolean,
+        default: false
+    }
+}
+
 const schema = new Schema({
     name: {
         type: String
     },
-    description: {
-        type: String,
-    },
-    roles: Object.values(RolesKeyEnum).map(each => ({ [each]: Boolean }))
+    description: Objects,
+    roles: Objects
 });
 
 const roleModel = model('role', schema);
