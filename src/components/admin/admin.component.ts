@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import adminModel from "../../models/admin.model";
+import { JwtPayloadType } from "src/types/jwt.interface";
 const jwt = require('jsonwebtoken');
 
 const signUp = async (req: Request, res: Response) => {
@@ -54,7 +55,11 @@ const signIn = async (req: Request, res: Response) => {
             message: "Invalid user email and/or password!",
             response: null
         });
-        const token = jwt.sign({ data: 'dilip' }, 'shopings', { expiresIn: 60 * 60 });
+
+        const payload: JwtPayloadType = {
+            adminId: data._id.toString()
+        }
+        const token = jwt.sign(payload, 'shopings', { expiresIn: 60 * 60 });
         return res.status(200).send({
             error: false,
             message: "login successfully",

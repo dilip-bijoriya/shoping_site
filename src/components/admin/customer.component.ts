@@ -106,4 +106,4 @@ const update = async (req: Request, res: Response) => {
     }
 }
 
-export { create, update, customerList, getByOne, deleteCustomer };
+export default { create, update, customerList, getByOne, deleteCustomer };
