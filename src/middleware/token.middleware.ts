@@ -12,7 +12,7 @@ const verifyTokenMD = async (req: Request, res: Response, next: NextFunction) =>
         let [Bearer, Token] = barierToken.split(' ');
         const decode: JwtPayloadType = jwt.verify(Token, "shopings");
         // get admin details by id from db
-        const data = await adminModel.findOne({ _id: decode.adminId })
+        const data = await adminModel.findOne({ _id: decode.adminId });
         if (!data) return res.status(401).send({ error: "Unauthorize user" });
         req.admin = {
             _id: data._id.toString(),
