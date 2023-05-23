@@ -3,6 +3,7 @@ import { signIn, signUp } from "../components/admin/admin.component";
 import verifyTokenMD from "../middleware/token.middleware";
 import customers from "../components/admin/customer.component";
 import group from "../components/admin/group.component";
+import product from "../components/admin/product.component"
 
 const adminRouter = Router();
 // admin api's
@@ -21,5 +22,8 @@ adminRouter.put('/updateGroup/:id', verifyTokenMD, group.updateGroup);
 adminRouter.post('/deleteGroup/:id', verifyTokenMD, group.deleteGroup);
 adminRouter.get('/groupList', verifyTokenMD, group.groupList);
 adminRouter.get('/group/getByOne/:id', verifyTokenMD, group.getByOne);
+
+// product's api
+adminRouter.post('/createProduct', product.create);
 
 export default adminRouter;

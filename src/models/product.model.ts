@@ -11,7 +11,7 @@ const schema = new Schema({
         required: true,
         trim: true
     },
-    quantity: {
+    inventry: {
         type: Number,
         required: true,
         trim: true
@@ -29,10 +29,14 @@ const schema = new Schema({
     image: {
         type: Object,
         default: {}
+    },
+    tags: {
+        type: Schema.Types.ObjectId,
+        ref: 'Group'
     }
 }, {
     timestamps: true
 });
 
-const productModel = model('Product', schema);
+const productModel = model('Products', schema);
 export default productModel;
