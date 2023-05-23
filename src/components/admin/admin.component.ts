@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import adminModel from "../../models/admin.model";
-import { JwtPayloadType } from "src/types/jwt.interface";
+import { JwtPayloadType } from "../../types/jwt.interface";
 const jwt = require('jsonwebtoken');
 
 const signUp = async (req: Request, res: Response) => {
@@ -37,17 +37,6 @@ const signIn = async (req: Request, res: Response) => {
         const { email, password } = req.body;
         if (!email) return res.status(400).send({ error: true, message: "email is rquired", response: null });
         if (!password) return res.status(400).send({ error: true, message: "password is rquired", response: null });
-        // const ss = await adminModel.aggregate([
-        //     {
-        //         $lookup: {
-        //             from: 'roles',//databases mai jo bhi table ka name ho
-        //             localField: 'roles',// admin model mai reference name 
-        //             foreignField: '_id',//roles tables _id
-        //             as: 'role_id' //jis name se display krwana ho
-        //         }
-        //     }
-        // ]);
-        // console.log(ss);
         const data = await adminModel.findOne({ email, password });
 
         if (!data) return res.status(401).send({

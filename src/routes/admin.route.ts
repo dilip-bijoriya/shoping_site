@@ -16,10 +16,10 @@ adminRouter.post('/delete/customer/:id', verifyTokenMD, customers.deleteCustomer
 adminRouter.put('/update/:id', verifyTokenMD, customers.update);
 
 // group's api
-adminRouter.post('/createGroup', group.createGroup);
-adminRouter.put('/updateGroup/:id', group.updateGroup);
-adminRouter.post('/deleteGroup/:id', group.deleteGroup);
-adminRouter.get('/groupList', group.groupList);
-adminRouter.get('/group/getByOne/:id', group.getByOne);
+adminRouter.post('/createGroup', verifyTokenMD, group.createGroup);
+adminRouter.put('/updateGroup/:id', verifyTokenMD, group.updateGroup);
+adminRouter.post('/deleteGroup/:id', verifyTokenMD, group.deleteGroup);
+adminRouter.get('/groupList', verifyTokenMD, group.groupList);
+adminRouter.get('/group/getByOne/:id', verifyTokenMD, group.getByOne);
 
 export default adminRouter;

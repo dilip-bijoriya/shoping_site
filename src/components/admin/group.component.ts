@@ -1,18 +1,26 @@
 import { Request, Response } from "express";
 import groupModel from "../../models/group.model";
+import { checkPermission } from "../../util/checkPermissions.util";
+import { RolesKeyEnum } from "../../types/roles.types";
 
 const createGroup = async (req: Request, res: Response) => {
     try {
-        const { name, discription, filter } = req.body;
+        const admin = req.admin;
+        if (!await checkPermission(admin.roles.toString(), RolesKeyEnum.create_group)) return res.status(403).send({
+            error: true,
+            message: 'Authrization Failed'
+        });
+
+        const { name, description, filter } = req.body;
         if (!name) return res.status(400).send({ error: true, message: "name is required", response: null });
-        if (!discription) return res.status(400).send({ error: true, message: "discription is required", response: null });
+        if (!description) return res.status(400).send({ error: true, message: "description is required", response: null });
         if (!filter) return res.status(400).send({ error: true, message: "filter is required", response: null });
-        const data = await groupModel.create({ name, discription, filter });
+        const data = await groupModel.create({ name, description, filter });
         return res.status(200).send({
             error: false,
             message: "Group created successfully!",
             response: data
-        })
+        });
     } catch (error: any) {
         console.error(error);
         return res.status(500).send({
@@ -24,9 +32,17 @@ const createGroup = async (req: Request, res: Response) => {
 
 const updateGroup = async (req: Request, res: Response) => {
     try {
+        const admin = req.admin;
+        if (!await checkPermission(admin.roles.toString(), RolesKeyEnum.update_group)) return res.status(403).send({
+            error: true,
+            message: 'Authrization Failed'
+        });
+
         const { id } = req.params;
-        const { name, discription, filter } = req.body;
-        const data = await groupModel.findByIdAndUpdate(id, { name, discription, filter }, { new: true });
+        const { name, description, filter } = req.body;
+        if (!name) return res.status(400).send({ error: true, message: "name is required", response: null });
+        if (!description) return res.status(400).send({ error: true, message: "description is required", response: null });
+        const data = await groupModel.findByIdAndUpdate(id, { name, description, filter }, { new: true });
         return res.status(200).send({
             error: false,
             message: "Group updated successfully!",
@@ -43,6 +59,12 @@ const updateGroup = async (req: Request, res: Response) => {
 
 const deleteGroup = async (req: Request, res: Response) => {
     try {
+        const admin = req.admin;
+        if (!await checkPermission(admin.roles.toString(), RolesKeyEnum.delete_group)) return res.status(403).send({
+            error: true,
+            message: 'Authrization Failed'
+        });
+
         const data = await groupModel.deleteOne({ _id: req.params.id });
         return res.status(200).send({
             error: false,
@@ -60,6 +82,12 @@ const deleteGroup = async (req: Request, res: Response) => {
 
 const groupList = async (req: Request, res: Response) => {
     try {
+        const admin = req.admin;
+        if (!await checkPermission(admin.roles.toString(), RolesKeyEnum.view_group)) return res.status(403).send({
+            error: true,
+            message: 'Authrization Failed'
+        });
+
         const data = await groupModel.find();
         const total = await groupModel.count();
         return res.status(200).send({
@@ -93,4 +121,4 @@ const getByOne = async (req: Request, res: Response) => {
     }
 }
 
-export default { createGroup, updateGroup, deleteGroup, groupList, getByOne }
+export default { createGroup, updateGroup, deleteGroup, groupList, getByOne };

@@ -47,6 +47,12 @@ const getByOne = async (req: Request, res: Response) => {
 
 const deleteCustomer = async (req: Request, res: Response) => {
     try {
+        const admin = req.admin;
+        if (!await checkPermission(admin.roles.toString(), RolesKeyEnum.delete_customer)) return res.status(403).send({
+            error: true,
+            message: 'Authrization Failed'
+        });
+
         const data = await customerModel.deleteOne({ _id: req.params.id });
         return res.status(200).send({
             error: false,
@@ -64,6 +70,12 @@ const deleteCustomer = async (req: Request, res: Response) => {
 
 const create = async (req: Request, res: Response) => {
     try {
+        const admin = req.admin;
+        if (!await checkPermission(admin.roles.toString(), RolesKeyEnum.create_customer)) return res.status(403).send({
+            error: true,
+            message: 'Authrization Failed'
+        });
+
         const { email, password, phone, name } = req.body;
         if (!email) return res.status(400).send({ error: true, message: "email is required", response: null });
         if (!password) return res.status(400).send({ error: true, message: "password is required", response: null });
@@ -89,6 +101,12 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
     try {
+        const admin = req.admin;
+        if (!await checkPermission(admin.roles.toString(), RolesKeyEnum.update_customer)) return res.status(403).send({
+            error: true,
+            message: 'Authrization Failed'
+        });
+
         const { id } = req.params;
         const { email, password, phone, fname, lname } = req.body;
         const updateCustomer = await customerModel.findByIdAndUpdate(id, { email, password, phone, name: { fname, lname } }, { new: true });

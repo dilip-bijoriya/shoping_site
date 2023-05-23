@@ -16,7 +16,7 @@ export const AdminMigration = async () => {
         }, {
             upsert: true,
             new: true
-        })
+        });
         await adminModel.findOneAndUpdate({ _id: '6454f526fd6e579cc57bed4d' }, {
             name: 'Super Admin',
             email: 'superadmin@gmail.com',
