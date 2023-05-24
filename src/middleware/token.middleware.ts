@@ -8,7 +8,6 @@ const verifyTokenMD = async (req: Request, res: Response, next: NextFunction) =>
     let barierToken: string = (req.headers["authorization"] || '') as unknown as string;
     if (!barierToken) return res.status(401).send({ error: "Unauthorize user" });
     try {
-        console.log(barierToken)
         let [Bearer, Token] = barierToken.split(' ');
         const decode: JwtPayloadType = jwt.verify(Token, "shopings");
         // get admin details by id from db

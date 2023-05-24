@@ -1,8 +1,6 @@
 import { ObjectId } from "mongoose";
 import { RolesKeyEnum } from "./roles.types";
 
-export { };
-
 declare global {
     namespace Express {
         interface Request {

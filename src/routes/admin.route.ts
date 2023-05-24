@@ -24,6 +24,10 @@ adminRouter.get('/groupList', verifyTokenMD, group.groupList);
 adminRouter.get('/group/getByOne/:id', verifyTokenMD, group.getByOne);
 
 // product's api
-adminRouter.post('/createProduct', product.create);
+adminRouter.post('/createProduct', verifyTokenMD, product.create);
+adminRouter.put('/updateProduct/:id', verifyTokenMD, product.update);
+adminRouter.get('/productList', verifyTokenMD, product.productList);
+adminRouter.post('/deleteProduct/:id', verifyTokenMD, product.deleteProduct);
+adminRouter.get('/productGetByOne/:id', verifyTokenMD, product.productGetByOne);
 
 export default adminRouter;

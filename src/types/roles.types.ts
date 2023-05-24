@@ -16,4 +16,10 @@ export enum RolesKeyEnum {
     update_group = 'update_group',
     delete_group = 'delete_customer',
     view_group = 'view_group',
+
+    // product types 
+    create_product = 'create_product',
+    update_product = 'update_product',
+    delete_product = 'delete_customer',
+    view_product = 'view_product',
 }
