@@ -1,8 +1,8 @@
-import redis from "redis"
-const env = process.env.REDIS;
+import { createClient } from "redis"
+const env = process.env.REDIS || '';
 
 
-const client = redis.createClient({
+const client = createClient({
     url: env
 });
 

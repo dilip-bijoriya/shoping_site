@@ -5,6 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 import sendEmail from "../../configs/email.config";
 import EmailVerifyTemplate from "../../templets/emailVerify.template";
 import client from "../../configs/redis.config";
+import { getFullName } from "../../util/validations.util";
+import ForgetPasswordTemplate from "../../templets/forgetPassword.template";
 
 const createAccount = async (req: Request, res: Response) => {
     try {
@@ -47,8 +49,8 @@ const loginAccount = async (req: Request, res: Response) => {
 
         if (!data?.verified?.email) {
             const key: string = `email-verify-${uuidv4()}`;
-            //   await client.setEx(key, 60 * 10, data?._id.toString());
-            sendEmail(data?.email, 'Email Verification', EmailVerifyTemplate(key, data?.name))
+            await client.setEx(key, 60 * 10, data?._id.toString() || '');
+            sendEmail(data?.email, 'Email Verification', EmailVerifyTemplate(key, getFullName(data?.name)));
             return res.status(400).send({
                 error: true,
                 message: "This account is NOT verified, We send an email to your register email address for verification.",
@@ -69,4 +71,85 @@ const loginAccount = async (req: Request, res: Response) => {
     }
 }
 
-export default { createAccount, loginAccount }
+const emailVerify = async (req: Request, res: Response) => {
+    try {
+        const key = req.params.key;
+        if (!key) return res.status(400).send({
+            error: false,
+            message: "key not found."
+        });
+        const _id = await client.get(key);
+        if (!_id) return res.status(400).send({
+            error: false,
+            message: "invalid token."
+        });
+        await customerModel.findByIdAndUpdate({ _id }, { isVerified: true });
+        const redirect_url = process.env.AFTER_EMAIL_VFY_REDIRECT_URL || '';
+        if (!redirect_url)
+            return res.status(200).send({
+                error: false,
+                message: "email verified!",
+                data: null
+            });
+        return res.redirect(301, redirect_url);
+    } catch (error: any) {
+        console.error(error);
+        return res.status(500).send({
+            error: true,
+            message: error.messa
+        })
+    }
+}
+
+const forgotPassword = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).send({ error: true, message: "email is required", response: null });
+        const data = await customerModel.findOne({ email: email });
+        const key = uuidv4();
+        await client.setEx(key, 60 * 10, data?._id.toString() || ' ');
+
+        {
+            // send email
+            sendEmail(data?.email, 'Email Verification', ForgetPasswordTemplate(key, getFullName(data?.name)));
+        }
+
+        return res.status(200).send({
+            error: false,
+            message: "email sent successfully",
+            response: ""
+        });
+    } catch (error: any) {
+        console.log(error)
+        return res.status(500).send({
+            error: true,
+            message: error.message
+        });
+    }
+}
+
+const resetPassword = async (req: Request, res: Response) => {
+    try {
+        const { key, password, confirmPassword } = req.body;
+        if (!key) return res.status(404).send({ error: true, message: "key is required", response: null });
+        if (!password) return res.status(404).send({ error: true, message: "password is required", response: null });
+        if (!confirmPassword) return res.status(404).send({ error: true, message: "Confirm password is required", response: null });
+        const id = await client.get(key);
+        if (!id) return res.status(403).send({ error: true, message: "Key expired!", response: null });
+        await customerModel.findOneAndUpdate({ _id: id }, { $set: { password: password } });
+        await client.del(key);
+        return res.status(200).send({
+            error: false,
+            message: "Password successfully updated..",
+            response: null
+        });
+    } catch (error: any) {
+        console.log(error);
+        return res.status(500).send({
+            error: true,
+            message: error.message
+        });
+    }
+}
+
+export default { createAccount, loginAccount, emailVerify, forgotPassword, resetPassword }
