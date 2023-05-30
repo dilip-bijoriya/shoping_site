@@ -4,6 +4,7 @@ import verifyTokenMD from "../middleware/token.middleware";
 import customers from "../components/admin/customer.component";
 import group from "../components/admin/group.component";
 import product from "../components/admin/product.component"
+import expolre from "../components/admin/explore.component"
 
 const adminRouter = Router();
 // admin api's
@@ -29,5 +30,8 @@ adminRouter.put('/updateProduct/:id', verifyTokenMD, product.update);
 adminRouter.get('/productList', verifyTokenMD, product.productList);
 adminRouter.post('/deleteProduct/:id', verifyTokenMD, product.deleteProduct);
 adminRouter.get('/productGetByOne/:id', verifyTokenMD, product.productGetByOne);
+
+// explor's api
+adminRouter.post('/createExplore', expolre.create);
 
 export default adminRouter;

@@ -96,7 +96,7 @@ const emailVerify = async (req: Request, res: Response) => {
         console.error(error);
         return res.status(500).send({
             error: true,
-            message: error.messa
+            message: error.message
         })
     }
 }
