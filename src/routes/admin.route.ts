@@ -33,5 +33,9 @@ adminRouter.get('/productGetByOne/:id', verifyTokenMD, product.productGetByOne);
 
 // explor's api
 adminRouter.post('/createExplore', expolre.create);
+adminRouter.put('/UpdateExplore/:id', expolre.update);
+adminRouter.get('/exploreGetByOne/:id', expolre.getByOne);
+adminRouter.post('/deleteExplore', expolre.deleteExplore);
+adminRouter.get('/ExploreList', expolre.ExploreList);
 
 export default adminRouter;
