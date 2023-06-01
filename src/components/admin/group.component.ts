@@ -88,7 +88,13 @@ const groupList = async (req: Request, res: Response) => {
             message: 'Authrization Failed'
         });
 
-        const data = await groupModel.find();
+        let { limit, page }: any = req.query;
+
+        if (!limit) limit = 10;
+        if (!page) page = 1;
+        let skip = (page - 1) * limit;
+
+        const data = await groupModel.find().skip(skip).limit(limit);
         const total = await groupModel.count();
         return res.status(200).send({
             error: false,
