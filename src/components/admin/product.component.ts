@@ -69,14 +69,14 @@ const productList = async (req: Request, res: Response) => {
         });
 
         let { limit, page }: any = req.query;
-        let search = req.query.search ? req.query.search : " ";
+        let search = req.query?.search || '';
         limit = Number(limit);
         page = Number(page);
 
         if (!limit) limit = 10;
         if (!page) page = 1;
         let skip = (page - 1) * limit;
-        const data = await productModel.find({ name: { $regex: search, $options: "xi" } }).skip(skip).limit(limit);
+        const data = await productModel.find({ name: { $regex: search, $options: "i" } }).skip(skip).limit(limit);
         const total = await productModel.count();
         return res.status(200).send({
             error: false,
