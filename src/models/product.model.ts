@@ -30,10 +30,10 @@ const schema = new Schema({
         type: Object,
         default: {}
     },
-    tags: {
+    tags: [{
         type: Schema.Types.ObjectId,
         ref: 'Group'
-    }
+    }]
 }, {
     timestamps: true
 });
