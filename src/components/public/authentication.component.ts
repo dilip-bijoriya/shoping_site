@@ -71,6 +71,42 @@ const loginAccount = async (req: Request, res: Response) => {
     }
 }
 
+const userVerificationStatus = async (req: Request, res: Response) => {
+    try {
+        const userId = req.params._id;
+        const user = await customerModel.findOne({ _id: userId })
+
+        if (!user) return res.status(404).send({
+            error: true,
+            message: "No user found related to this user id"
+        });
+
+        if (user.verified?.email) {
+            return res.status(200).send({
+                error: false,
+                response: {
+                    verified: true,
+                    message: 'This user email address verified.'
+                }
+            });
+        }
+
+        return res.status(200).send({
+            error: false,
+            response: {
+                verified: false,
+                message: 'This user email address NOT verified yet.'
+            }
+        });
+    } catch (error: any) {
+        console.error(error);
+        return res.status(500).send({
+            error: true,
+            message: error.message
+        });
+    }
+}
+
 const emailVerify = async (req: Request, res: Response) => {
     try {
         const key = req.params.key;
@@ -83,15 +119,25 @@ const emailVerify = async (req: Request, res: Response) => {
             error: false,
             message: "invalid token."
         });
-        await customerModel.findByIdAndUpdate({ _id }, { isVerified: true });
-        const redirect_url = process.env.AFTER_EMAIL_VFY_REDIRECT_URL || '';
+        const customer = await customerModel.findOne({ _id });
+        if (!customer) return res.status(404).send({
+            error: false,
+            message: "no account found related to this link."
+        });
+        if (!customer.verified) customer.verified = {
+            email: false,
+            phone: false
+        };
+        customer.verified.email = true;
+        await customer.save();
+        const redirect_url = (process.env.AFTER_EMAIL_VFY_REDIRECT_URL || '');
         if (!redirect_url)
             return res.status(200).send({
                 error: false,
                 message: "email verified!",
                 data: null
             });
-        return res.redirect(301, redirect_url);
+        return res.redirect(301, `${redirect_url}/${_id}`);
     } catch (error: any) {
         console.error(error);
         return res.status(500).send({
@@ -152,4 +198,4 @@ const resetPassword = async (req: Request, res: Response) => {
     }
 }
 
-export default { createAccount, loginAccount, emailVerify, forgotPassword, resetPassword }
+export default { createAccount, loginAccount, emailVerify, forgotPassword, resetPassword, userVerificationStatus }

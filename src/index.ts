@@ -12,7 +12,7 @@ async function server() {
     try {
         const app = express();
         app.use(express.json());
-        app.use(cors());
+        app.use(cors({ origin: '*' }));
         await mongoose.connect(process.env.MONGODB as string);
         console.log('MongoDB is connected.');
         app.use('/api/admin', adminRouter);

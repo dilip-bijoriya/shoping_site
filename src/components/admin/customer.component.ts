@@ -114,8 +114,9 @@ const update = async (req: Request, res: Response) => {
         });
 
         const { id } = req.params;
-        const { email, password, phone, fname, lname } = req.body;
-        const updateCustomer = await customerModel.findByIdAndUpdate(id, { email, password, phone, name: { fname, lname } }, { new: true });
+        const { email, password, phone, name } = req.body;
+        const { fname, lname } = name;
+        const updateCustomer = await customerModel.findByIdAndUpdate(id, { name, email, password, phone }, { new: true });
         return res.status(200).send({
             error: false,
             message: "customer update successfully",
