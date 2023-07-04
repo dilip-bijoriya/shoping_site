@@ -8,6 +8,6 @@ publicRouter.post('/loginAccount', auth.loginAccount);
 publicRouter.post("/forgotPassword", auth.forgotPassword);
 publicRouter.get("/emailVerify/:key", auth.emailVerify);
 publicRouter.post("/resetPassword", auth.resetPassword);
-publicRouter.get("/verificatinStatus", auth.userVerificationStatus)
+publicRouter.get("/verificatinStatus/:_id", auth.userVerificationStatus)
 
 export default publicRouter;
