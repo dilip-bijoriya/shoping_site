@@ -12,12 +12,19 @@ const customerList = async (req: Request, res: Response) => {
         });
 
         let { limit, page }: any = req.query;
-
+        let search = req.query?.search || '';
         if (!limit) limit = 10;
         if (!page) page = 1;
         let skip = (page - 1) * limit;
 
-        const data = await customerModel.find().skip(skip).limit(limit);
+        const data = await customerModel.find({
+            $or: [
+                { 'name.fname': { $regex: search } },
+                { 'name.lname': { $regex: search } },
+                { email: { $regex: search } },
+                { phone: { $regex: search } }
+            ]
+        }).skip(skip).limit(limit);
         const total = await customerModel.count();
         return res.status(200).send({
             error: false,
